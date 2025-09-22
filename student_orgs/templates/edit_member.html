@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Member - Student Organizations{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Edit Member: {{ member.personName }}
+                </h4>
+                <p class="text-muted mb-0">Club: {{ club.name }}</p>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Person</label>
+                        <input type="text" class="form-control" readonly value="{{ member.personName }}">
+                        <div class="form-text">Person cannot be changed. Remove and re-add to change the person.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="member" {% if member.role == 'member' %}selected{% endif %}>Member</option>
+                            <option value="officer" {% if member.role == 'officer' %}selected{% endif %}>Officer</option>
+                            <option value="owner" {% if member.role == 'owner' %}selected{% endif %}>Owner</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="active" {% if member.status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="inactive" {% if member.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               value="{{ member.title or '' }}" 
+                               placeholder="e.g., President, Vice President, Treasurer">
+                        <div class="form-text">Optional: Specific position or title within the club</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('club_members', club_id=club.id) }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Update Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

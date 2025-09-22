@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Clubs - Student Organizations{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users me-2"></i>Clubs</h2>
+    <a href="{{ url_for('create_club') }}" class="btn btn-success">
+        <i class="fas fa-plus me-2"></i>Add Club
+    </a>
+</div>
+
+{% if clubs %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>University</th>
+                        <th>Description</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for club in clubs %}
+                    <tr>
+                        <td>
+                            <strong>{{ club.name }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">{{ club.universityName }}</span>
+                        </td>
+                        <td>
+                            {% if club.description %}
+                                {{ club.description[:50] }}{% if club.description|length > 50 %}...{% endif %}
+                            {% else %}
+                                <span class="text-muted">No description</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ club.createdAt|datetime }}</small>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('club_members', club_id=club.id) }}" 
+                                   class="btn btn-sm btn-outline-info" title="View Members">
+                                    <i class="fas fa-users"></i>
+                                </a>
+                                <a href="{{ url_for('edit_club', club_id=club.id) }}" 
+                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        onclick="confirmDelete('{{ club.name }}', '{{ club.id }}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">No Clubs Found</h4>
+        <p class="text-muted">Create your first club to get started.</p>
+        <a href="{{ url_for('create_club') }}" class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>Add Club
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteName"></strong>?</p>
+                <p class="text-danger"><small>This will also delete all memberships in this club. This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(name, id) {
+    document.getElementById('deleteName').textContent = name;
+    document.getElementById('deleteForm').action = '/clubs/' + id + '/delete';
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+{% endblock %}

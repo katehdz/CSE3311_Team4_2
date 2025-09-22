@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Add Member to {{ club.name }} - Student Organizations{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Add Member to {{ club.name }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="personId" class="form-label">Person <span class="text-danger">*</span></label>
+                        <select class="form-select" id="personId" name="personId" required>
+                            <option value="">Select a person...</option>
+                            {% for person in people %}
+                            <option value="{{ person.id }}">{{ person.name }}{% if person.email %} ({{ person.email }}){% endif %}</option>
+                            {% endfor %}
+                        </select>
+                        {% if not people %}
+                        <div class="form-text text-warning">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            No people found. <a href="{{ url_for('create_person') }}">Create a person first</a>.
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="member">Member</option>
+                            <option value="officer">Officer</option>
+                            <option value="owner">Owner</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               placeholder="e.g., President, Vice President, Treasurer">
+                        <div class="form-text">Optional: Specific position or title within the club</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('club_members', club_id=club.id) }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
+                        <button type="submit" class="btn btn-success" {% if not people %}disabled{% endif %}>
+                            <i class="fas fa-user-plus me-2"></i>Add Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
